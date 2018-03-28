@@ -4,8 +4,7 @@
 mod tools;
 
 use tools::Cmd;
-use tools::RvmGenerator;
-use tools::Runnable;
+use tools::rvm::RvmGenerator;
 
 struct Config {
     kind: String,
