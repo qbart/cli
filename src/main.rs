@@ -4,32 +4,12 @@
 mod tools;
 
 use tools::Cmd;
-use tools::rvm::RvmGenerator;
+use tools::Config;
 
-struct Config {
-    kind: String,
-    params: Vec<String>,
-}
-
-impl Config {
-    fn new(args: &[String]) -> Config {
-        let kind = args[1].clone();
-        let params: Vec<String> = args[2..].to_vec();
-
-        Config { kind, params }
-    }
-
-    fn resolve(&self) -> Cmd {
-        match self.kind.as_ref() {
-            "help" => Cmd::Help,
-            "rvm" => Cmd::Rvm(RvmGenerator::new(&self.params)),
-            _ => Cmd::None,
-        }
-    }
-}
+use std::env;
 
 fn main() {
-    let args: Vec<String> = std::env::args().collect();
+    let args: Vec<String> = env::args().collect();
     let config = Config::new(&args);
     let cmd = config.resolve();
 
