@@ -5,7 +5,7 @@ use self::rvm::RvmGenerator;
 pub enum Cmd {
     Help,
     Rvm(RvmGenerator),
-    None,
+    Invalid,
 }
 
 pub struct Config {
@@ -14,18 +14,22 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new(args: &[String]) -> Config {
-        let kind = args[1].clone();
-        let params: Vec<String> = args[2..].to_vec();
+    pub fn new(args: &[String]) -> Option<Config> {
+        if args.len() >= 2 {
+            let kind = args[1].clone();
+            let params: Vec<String> = args[2..].to_vec();
 
-        Config { kind, params }
+            Some(Config { kind, params })
+        } else {
+            None
+        }
     }
 
     pub fn resolve(&self) -> Cmd {
         match self.kind.as_ref() {
             "help" => Cmd::Help,
             "rvm" => Cmd::Rvm(RvmGenerator::new(&self.params)),
-            _ => Cmd::None,
+            _ => Cmd::Invalid,
         }
     }
 }

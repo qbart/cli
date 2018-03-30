@@ -2,7 +2,7 @@ use std::path::Path;
 use std::fs::File;
 use std::error::Error;
 use std::io::prelude::*;
-
+use colored::*;
 
 pub struct RvmGenerator {
     version: String,
@@ -11,16 +11,31 @@ pub struct RvmGenerator {
 
 impl RvmGenerator {
     pub fn new(params: &[String]) -> RvmGenerator {
-        let rvm_params: Vec<&str> = params[0].split("@").collect();
-
-        RvmGenerator {
-            version: String::from(rvm_params[0]),
-            gemset: String::from(rvm_params[1]),
+        if params.len() >= 1 {
+            let rvm_params: Vec<&str> = params[0].split("@").collect();
+            if rvm_params.len() >= 2 {
+                return RvmGenerator {
+                    version: String::from(rvm_params[0]),
+                    gemset: String::from(rvm_params[1]),
+                }
+            }
         }
+
+        RvmGenerator { version: "".to_string(), gemset: "".to_string() }
     }
 
     pub fn run(&self) {
         println!("RVM");
+        if self.version == "" || self.gemset == "" {
+            println!("{}", "Invalid rvm params".red());
+        } else {
+            self.process();
+            println!("{}", "Ok".green());
+        }
+
+    }
+
+    fn process(&self) {
         let ruby_version_path = Path::new("./.ruby-version");
         let ruby_gemset_path = Path::new("./.ruby-gemset");
 
@@ -45,7 +60,5 @@ impl RvmGenerator {
             Err(e) => panic!("Failed to write to file {}: {}", ruby_gemset_path.display(), e.description()),
             _ => (),
         };
-
-        println!("Ok");
     }
 }
