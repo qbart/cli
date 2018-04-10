@@ -5,3 +5,22 @@ authors = ["bart <wojtowicz.bartlomiej@gmail.com>"]
 
 [dependencies]
 colored = "1.6"
+
+[profile.dev]
+opt-level = 0
+debug = true
+debug-assertions = true
+codegen-units = 8
+incremental = true
+overflow-checks = true
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = 'abort'
+incremental = false
+overflow-checks = false
